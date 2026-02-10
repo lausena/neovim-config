@@ -28,3 +28,8 @@ map("n", "<Leader>dr", "<cmd>lua require'dap'.run_last()<CR>", { desc = "Debugge
 
 -- rustaceanvim
 map("n", "<Leader>dt", "<cmd>lua vim.cmd('RustLsp testables')<CR>", { desc = "Debugger testables" })
+
+-- Cargo
+map("n", "<Leader>cr", "<cmd>Cargo run<CR>", { desc = "Cargo run" })
+map("n", "<Leader>cb", "<cmd>Cargo build<CR>", { desc = "Cargo build" })
+map("n", "<Leader>ct", "<cmd>Cargo test<CR>", { desc = "Cargo test" })
