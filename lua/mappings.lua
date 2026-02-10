@@ -29,7 +29,27 @@ map("n", "<Leader>dr", "<cmd>lua require'dap'.run_last()<CR>", { desc = "Debugge
 -- rustaceanvim
 map("n", "<Leader>dt", "<cmd>lua vim.cmd('RustLsp testables')<CR>", { desc = "Debugger testables" })
 
--- Cargo
-map("n", "<Leader>cr", "<cmd>Cargo run<CR>", { desc = "Cargo run" })
-map("n", "<Leader>cb", "<cmd>Cargo build<CR>", { desc = "Cargo build" })
-map("n", "<Leader>ct", "<cmd>Cargo test<CR>", { desc = "Cargo test" })
+-- Cargo (run in a split terminal that auto-closes on success)
+local function cargo_cmd(cmd)
+  return function()
+    vim.cmd("botright split | terminal cargo " .. cmd)
+    local buf = vim.api.nvim_get_current_buf()
+    vim.api.nvim_create_autocmd("TermClose", {
+      buffer = buf,
+      callback = function()
+        vim.api.nvim_buf_set_keymap(buf, "n", "q", "", {
+          callback = function()
+            vim.api.nvim_buf_delete(buf, { force = true })
+          end,
+        })
+        -- Switch out of terminal mode so the "q" mapping works
+        vim.cmd("stopinsert")
+        vim.api.nvim_echo({ { "Press q to close", "WarningMsg" } }, false, {})
+      end,
+    })
+  end
+end
+
+map("n", "<Leader>cr", cargo_cmd("run"), { desc = "Cargo run" })
+map("n", "<Leader>cb", cargo_cmd("build"), { desc = "Cargo build" })
+map("n", "<Leader>ct", cargo_cmd("test"), { desc = "Cargo test" })
