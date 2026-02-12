@@ -40,7 +40,11 @@ Leader key: `<Space>`
 | **Debugger** | |
 | `<Leader>dc` | Continue |
 | `<Leader>db` | Toggle breakpoint |
-| `<Leader>dl/dj/dk` | Step into/over/out |
+| `<Leader>dd` | Set conditional breakpoint |
+| `<Leader>dl` | Step into |
+| `<Leader>dj` | Step over |
+| `<Leader>dk` | Step out |
+| `<Leader>dr` | Run last |
 | `<Leader>de` | Terminate |
 | `<Leader>dt` | RustLsp testables |
 
