@@ -30,23 +30,29 @@ map("n", "<Leader>dr", "<cmd>lua require'dap'.run_last()<CR>", { desc = "Debugge
 map("n", "<Leader>dt", "<cmd>lua vim.cmd('RustLsp testables')<CR>", { desc = "Debugger testables" })
 
 -- Cargo (run in a split terminal that auto-closes on success)
+local function run_cargo(full_cmd)
+  vim.cmd("botright split | terminal cargo " .. full_cmd)
+  local buf = vim.api.nvim_get_current_buf()
+  vim.api.nvim_create_autocmd("TermClose", {
+    buffer = buf,
+    callback = function()
+      vim.api.nvim_buf_set_keymap(buf, "n", "q", "", {
+        callback = function()
+          vim.api.nvim_buf_delete(buf, { force = true })
+        end,
+      })
+      vim.cmd("stopinsert")
+      vim.api.nvim_echo({ { "Press q to close", "WarningMsg" } }, false, {})
+    end,
+  })
+end
+
 local function cargo_cmd(cmd)
   return function()
-    vim.cmd("botright split | terminal cargo " .. cmd)
-    local buf = vim.api.nvim_get_current_buf()
-    vim.api.nvim_create_autocmd("TermClose", {
-      buffer = buf,
-      callback = function()
-        vim.api.nvim_buf_set_keymap(buf, "n", "q", "", {
-          callback = function()
-            vim.api.nvim_buf_delete(buf, { force = true })
-          end,
-        })
-        -- Switch out of terminal mode so the "q" mapping works
-        vim.cmd("stopinsert")
-        vim.api.nvim_echo({ { "Press q to close", "WarningMsg" } }, false, {})
-      end,
-    })
+    vim.ui.input({ prompt = "cargo " .. cmd .. " " }, function(args)
+      if args == nil then return end -- cancelled
+      run_cargo(cmd .. " " .. args)
+    end)
   end
 end
 
