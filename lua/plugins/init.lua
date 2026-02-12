@@ -54,6 +54,17 @@ return {
         dap = {
           adapter = cfg.get_codelldb_adapter(codelldb_path, liblldb_path),
         },
+        server = {
+          settings = {
+            ["rust-analyzer"] = {
+              inlayHints = {
+                typeHints = { enable = true },
+                parameterHints = { enable = true },
+                chainingHints = { enable = true },
+              },
+            },
+          },
+        },
       }
     end,
   },
@@ -164,19 +175,25 @@ return {
         ignore = false,  -- this shows files/folders in .gitignore
       },
     },
-  }
-  
+  },
+
+  {
+    "folke/todo-comments.nvim",
+    event = "BufReadPost",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opts = {},
+  },
 
   -- test new blink
   -- { import = "nvchad.blink.lazyspec" },
 
-  -- {
-  -- 	"nvim-treesitter/nvim-treesitter",
-  -- 	opts = {
-  -- 		ensure_installed = {
-  -- 			"vim", "lua", "vimdoc",
-  --      "html", "css"
-  -- 		},
-  -- 	},
-  -- },
+  {
+  	"nvim-treesitter/nvim-treesitter",
+  	opts = {
+  		ensure_installed = {
+  			"vim", "lua", "vimdoc",
+        "html", "css", "rust", "toml"
+  		},
+  	},
+  },
 }
