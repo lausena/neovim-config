@@ -174,6 +174,10 @@ return {
       git = {
         ignore = false,  -- this shows files/folders in .gitignore
       },
+      filters = {
+        dotfiles = false,
+        custom = {},  -- clear default custom filters that hide bin, etc.
+      },
     },
   },
 
